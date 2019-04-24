@@ -4,6 +4,8 @@
 require('dotenv').config();
 
 // Application Dependencies
+// import express from 'express';
+// import cors from 'cors';
 const express = require('express');
 const cors = require('cors');
 
@@ -16,11 +18,21 @@ app.use(cors());
 app.get('/location', (request,response) => {
   try {
     const locationData = searchToLatLong(request.query.data);
+    console.log(request.query.data);
     response.send(locationData);
   }
   catch(error) {
     console.error(error);
     response.status(500).send('Status: 500. So sorry, something went wrong.');
+  }
+});
+
+app.get('/', (request, response) => {
+  try {
+    response.send('Hello World!');
+  }
+  catch(error) {
+    response.send('shit happened');
   }
 });
 
