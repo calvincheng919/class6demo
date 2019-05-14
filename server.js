@@ -4,8 +4,7 @@
 require('dotenv').config();
 
 // Application Dependencies
-// import express from 'express';
-// import cors from 'cors';
+
 const express = require('express');
 const cors = require('cors');
 
@@ -18,8 +17,9 @@ app.use(cors());
 app.get('/location', (request,response) => {
   try {
     const locationData = searchToLatLong(request.query.data);
-    console.log(request.query.data);
+    // // console.log(request.query.data);
     response.send(locationData);
+    
   }
   catch(error) {
     console.error(error);
@@ -29,23 +29,27 @@ app.get('/location', (request,response) => {
 
 app.get('/', (request, response) => {
   try {
-    response.send('Hello World!');
+    response.send('Hello World! This is my new Heroku deployment');
   }
   catch(error) {
     response.send('shit happened');
   }
 });
 
+
 // Helper Functions
 function searchToLatLong(query) {
   const geoData = require('./data/geo.json');
-  const location = {
-    search_query: query,
-    formatted_query: geoData.results[0].formatted_address,
-    latitude: geoData.results[0].geometry.location.lat,
-    longitude: geoData.results[0].geometry.location.lng
-  };
-  return location;
+  const location = new Location(query, geoData);
+
+  return geoData;
+}
+
+function Location(query, geoData){
+  this.search_query = query;
+  this.formatted_query = geoData.results[0].formatted_address;
+  this.latitude = geoData.results[0].geometry.location.lat;
+  this.longitude = geoData.results[0].geometry.location.lng;
 }
 
 // Refactor the searchToLatLong function to replace the object literal with a call to this constructor function:
@@ -55,6 +59,7 @@ function searchToLatLong(query) {
 //   this.latitude = geoData.results[0].geometry.location.lat;
 //   this.longitude = geoData.results[0].geometry.location.lng;
 // }
+
 
 // Make sure the server is listening for requests
 app.listen(PORT, () => console.log(`App is listening on ${PORT}`) );
